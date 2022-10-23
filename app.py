@@ -4,7 +4,7 @@ import os
 import librosa
 
 UPLOAD_DIRECTORY = "/Users/bransonbragg/Deepgram/api_uploaded_files"
-ALLOWED_EXTENSIONS = {'wav'}
+ALLOWED_EXTENSIONS = {'wav', 'pcm', 'mp3', 'aiff'}
 
 app = Flask(__name__)
 app.config['UPLOAD_DIRECTORY'] = UPLOAD_DIRECTORY
@@ -30,7 +30,7 @@ def list():
         return [obj for obj in AUDIOS if (AUDIOS[obj]['duration'] <= int(max_duration))]
     elif min_duration:
         return [obj for obj in AUDIOS if (AUDIOS[obj]['duration'] >= int(min_duration))]
-    return AUDIOS
+    return [obj for obj in AUDIOS if AUDIOS[obj]]
 
 @app.route('/info', methods=['GET'])
 def info():
@@ -38,31 +38,32 @@ def info():
     if not name:
         return AUDIOS
     elif name not in AUDIOS:
-        abort(404, "Please specify a valid filename")
+        abort(400, "Please specify a valid filename")
     return AUDIOS[name]
 
 @app.route('/download', methods=['GET'])
 def download():
     name = request.args.get('name')
     if not name or name not in AUDIOS:
-        abort(404, "Please specify a valid filename")
+        abort(400, "Please specify a valid filename")
     return send_from_directory(UPLOAD_DIRECTORY, name, as_attachment=True)
 
 @app.route('/post', methods=['POST'])
 def post():
-    # return jsonify(request.files['file'])
     if 'file' not in request.files:
-        abort(404, 'No file part')
+        abort(400, 'No file part')
     file = request.files['file']
+    if file.filename in AUDIOS:
+        abort(400, "File already exists")
     if file.filename == '':
-            abort(404, 'No selected file')
+            abort(400, 'No selected file')
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_DIRECTORY'], filename))
         AUDIOS[filename] = {'name': filename, 'duration': librosa.get_duration(filename=UPLOAD_DIRECTORY + '/' + filename)}
     else:
         abort(404, "Invalid file type")
-    return jsonify({"response": "success"})
+    return jsonify({"response": "success"}), 201
 
 @app.route('/')
 def test():
@@ -70,3 +71,33 @@ def test():
 
 if __name__ == '__main__':
     app.run(host="localhost")
+    
+    """
+    Functionality FINISHED: 
+    
+    /list
+        -maxduration
+        -minduration
+        e.g. curl http://localhost:5000/list
+             curl "http://localhost:5000/list?minduration=30"
+             curl "http://localhost:5000/list?maxduration=35&minduration=25"
+    /info
+        -name
+        e.g. curl "http://localhost:5000/info?name=myfile2.wav"
+             curl http://localhost:5000/info
+    /download
+        -name
+        e.g. curl "http://localhost:5000/download?name=myfile.wav"
+    /post
+        -file
+        e.g. curl -F "file=@myfile.wav" http://localhost:5000/post
+        
+    Functionality TODO
+    
+    /list
+        Add more filtering functionality
+         -- add something new to the AUDIOS json?
+    /post
+        Make it so that the prompt POST request works
+         -- e.g. curl -X POST @myfile.wav http://localhost:5000/post
+    """
