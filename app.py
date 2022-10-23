@@ -13,8 +13,6 @@ if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
 
 AUDIOS = {
-    'myfile.wav': {'name': 'myfile.wav', 'duration': 34},
-    'myfile2.wav': {'name': 'myfile2.wav', 'duration': 40}
 }
 
 def allowed_file(filename):
@@ -61,7 +59,7 @@ def post():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_DIRECTORY'], filename))
-        AUDIOS[filename] = {'name': filename}
+        AUDIOS[filename] = {'name': filename, 'duration': librosa.get_duration(filename=UPLOAD_DIRECTORY + '/' + filename)}
     else:
         abort(404, "Invalid file type")
     return jsonify({"response": "success"})
