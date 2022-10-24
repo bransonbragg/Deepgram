@@ -1,4 +1,4 @@
-# Deepgram
+# Deepgram Coding Assessment
 <h2>Simple API Server handling user audio projects</h2>
 
 
