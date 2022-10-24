@@ -50,6 +50,10 @@ def download():
         abort(400, "Please specify a valid filename")
     return send_from_directory(UPLOAD_DIRECTORY, name, as_attachment=True)
 
+@app.route('/post', methods=['GET'])
+def postPage():
+    return render_template('upload.html')
+
 @app.route('/post', methods=['POST'])
 def post():
     if 'file' not in request.files:
