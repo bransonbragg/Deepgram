@@ -68,12 +68,22 @@ def post():
         file.save(os.path.join(app.config['UPLOAD_DIRECTORY'], filename))
         AUDIOS[filename] = {'name': filename, 'duration': librosa.get_duration(filename=UPLOAD_DIRECTORY + '/' + filename)}
     else:
-        abort(404, "Invalid file type")
+        abort(400, "Invalid file type")
     return jsonify({"response": "success"}), 201
 
-@app.route('/')
-def test():
+@app.route('/', methods=['GET'])
+def landingPage():
     return render_template('login.html')
+
+@app.route('/delete', methods=['GET'])
+def delete():
+    name = request.args.get('name')
+    if not name or name not in AUDIOS:
+        abort(400, "Submit a valid filename. To see options, do /list")
+    AUDIOS.pop(name)
+    os.remove(UPLOAD_DIRECTORY + '/' + name)
+    return jsonify({"response": "success"}), 201
+    
 
 if __name__ == '__main__':
     app.run(host="localhost")
