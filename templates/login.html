@@ -12,6 +12,7 @@
         <li>/info</li>
         <li>/download</li>
         <li>/post</li>
+        <li>/delete</li>
     </ul>
     <h2>/list</h2>
     <h4>List your files. Optional filtering by duration length. </h4>
@@ -32,6 +33,11 @@
     <h4>Add a new file to your user directory. Valid file types include: .wav, .mp3, .aiff</h4>
     <p>e.g. http://localhost:5000/post then select file</p>
     <p>(command line) $ curl -F "file=@myfile.wav" http://localhost:5000/post</p>
+    <h2>/delete</h2>
+    <h4>Remove a file from your directory</h4>
+    <p>Required keyword: name</p>
+    <p>e.g. http://localhost:5000/delete?name=myfile.wav</p>
+    <p>(command line) $ curl "http://localhost:5000/delete?name=myfile.wav"</p>
 
 </body>
 </html>
