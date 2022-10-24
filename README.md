@@ -1,5 +1,5 @@
 # Deepgram
-<h1>Simple API Server handling user audio projects</h1>
+<h2>Simple API Server handling user audio projects</h2>
 
 
 Assignment Details:
