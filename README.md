@@ -12,9 +12,9 @@ Your server should provide endpoints that allow a user to perform the following 
 
 2. GET a list of stored files, GET the contet of stored files, and GET metadata of stored files, such as the duration of the audio
 -- The GET endpoint(s) should accept a query parameter that allows the user to filter results. Results should be returned as JSON  
--- e.g. $ curl http://localhost/download?name=myfile.wav  
+$ curl http://localhost/download?name=myfile.wav  
         $ curl http://localhost/list?maxduration=300  
-        # curl http://localhost/info?name=myfile.wav  
+        $ curl http://localhost/info?name=myfile.wav  
 
 When you arrive for your interview, we will ask you to present your code and elaborate on some of the design choices you've made, some of the things you would have done differently if you had more time, and some things you learned about libraries you used  
 
