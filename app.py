@@ -1,10 +1,10 @@
-from flask import Flask, request, abort, send_from_directory, jsonify
+from flask import Flask, request, abort, send_from_directory, jsonify, render_template
 from werkzeug.utils import secure_filename
 import os
 import librosa
 
 UPLOAD_DIRECTORY = "/Users/bransonbragg/Deepgram/api_uploaded_files"
-ALLOWED_EXTENSIONS = {'wav', 'pcm', 'mp3', 'aiff'}
+ALLOWED_EXTENSIONS = {'wav', 'mp3', 'aiff'}
 
 app = Flask(__name__)
 app.config['UPLOAD_DIRECTORY'] = UPLOAD_DIRECTORY
@@ -13,6 +13,8 @@ if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
 
 AUDIOS = {
+    "myfile.wav": {"duration": 33.529625, "name": "myfile.wav"},
+    "myfile2.wav": {"duration": 29.628662131519274, "name":"myfile2.wav"}
 }
 
 def allowed_file(filename):
@@ -67,7 +69,7 @@ def post():
 
 @app.route('/')
 def test():
-    return "Hello World!"
+    return render_template('login.html')
 
 if __name__ == '__main__':
     app.run(host="localhost")
